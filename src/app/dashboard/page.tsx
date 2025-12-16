@@ -1,13 +1,29 @@
 import WidgetItem from '@/components/WidgetItem'
+import { getServerSession } from 'next-auth'
 import React from 'react'
+import { authOptions } from '../api/auth/[...nextauth]/route'
+import { redirect } from 'next/navigation'
 
-const DashboardPage = () => {
+const DashboardPage = async () => {
+
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+        redirect('/api/auth/signin')
+    }
     return (
         <div>
             {/* Este contenido va dentro de page.tsx */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <WidgetItem
-                    title='Global Activities' pay='$23,988' percent='2%' subtitle='Compared to last week $13,988' />
+                    title='Usuario conectado server side' >
+                    <div className='flex flex-col'>
+                        <span>{session.user?.name}</span>
+                        <span>{session.user?.email}</span>
+                        <span>{session.user?.image}</span>
+                    </div>
+
+                </WidgetItem>
             </div>
             {/* TODO: fin del dashboard/page.tsx  */}
 
